@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import List from "./list";
+import ListForm from "./listForm"
+import { db } from "./firebase";
+import {useEffect} from "react";
+import {doc, onSnapshot} from "firebase/firestore";
+import {useDispatch} from "react-redux";
+import {initial} from './redux';
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    onSnapshot(doc(db, "fruits", "fruits"), (doc) => {
+      dispatch(initial(doc.data().items));
+    });
+  }, [dispatch])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <ListForm />
+      <List />
     </div>
   );
 }
